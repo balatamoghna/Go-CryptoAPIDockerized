@@ -1,0 +1,85 @@
+version: '3'
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - 'rabbitmq_data:/data'
+    networks:
+      - fullstack
+
+
+  app:
+    container_name: full_app
+    build: CryptoDetailsAPI/.
+    ports: 
+      - 3000:3000 
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - rabbitmq   
+      - fullstack-mysql          
+    links:
+      - fullstack-mysql    
+    networks:
+      - fullstack
+
+  app1:
+    container_name: service_app
+    build: BackgroundEmail/.
+    restart: on-failure
+    volumes:
+      - api:/usr/src/service/
+    depends_on:
+      - rabbitmq       
+    networks:
+      - fullstack
+
+
+  fullstack-mysql:
+    image: mysql:5.7
+    container_name: full_db_mysql
+    ports: 
+      - 3307:3307
+    environment: 
+      - MYSQL_ROOT_HOST=${DB_HOST} 
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_TCP_PORT= 3307
+    volumes:
+      - database_mysql:/var/lib/mysql
+    networks:
+      - fullstack
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    depends_on:
+      - fullstack-mysql
+    environment:
+      - PMA_HOST=fullstack-mysql # Note the "fullstack-mysql". Must be the name of the what you used as the mysql service.
+      - PMA_USER=${DB_USER}
+      - PMA_PORT=3307
+      - PMA_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 9090:80
+    restart: always
+    networks:
+      - fullstack
+
+
+volumes:
+  api:
+  database_mysql:         
+  rabbitmq_data:         
+
+# Networks to be created to facilitate communication between containers
+networks:
+  fullstack:
+    driver: bridge
