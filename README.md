@@ -1,5 +1,5 @@
 # CryptoDetailsAPI-GoLang
- A project submission for Krypto
+ Dockerized project of the CryptoCurrency API
 
 
 Libraries used:
@@ -26,17 +26,10 @@ Once everything is setup,
 2.Startup RabbitMQ
 Everything is set and finished.
 
-
-Run the project
+Run the project(Updated)
 ---------------
-To run the project, Simply cd into the folder:
-```cd .\CurrencyAlertAPI\ ```
-Run main.go:
-```go run .\main.go```
-And then, run the worker.go file inside the worker folder as such:
-```cd .\worker\```
-Run worker.go:
-```go run .\worker.go```
+Simply run 
+```docker-compose up```
 
 Documentation
 ---------------
