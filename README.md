@@ -1,4 +1,4 @@
-# CryptoDetailsAPI-GoLang
+# Go-CryptoAPIDockerized
  Dockerized project of the CryptoCurrency API
 
 
